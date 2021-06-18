@@ -1,6 +1,8 @@
 #include "MpClientPlugin.h"
 #include <vector>
 
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
+
 void MpClientPlugin::CreateClient(State& state, const char* targetHostname,
                                   uint16_t targetPort)
 {
@@ -47,10 +49,24 @@ void MpClientPlugin::Send(State& state, const char* jsonContent, bool reliable)
 {
   if (!state.cl)
     return;
+
   auto n = strlen(jsonContent);
   std::vector<uint8_t> buf(n + 1);
-  buf[0] = Networking::MinPacketId;
+  buf[0] = Networking::MinPacketId; //Insert minimal pocket id as first byte
   memcpy(buf.data() + 1, jsonContent, n);
 
   state.cl->Send(buf.data(), buf.size(), reliable);
 }
+void MpClientPlugin::Send(MpClientPlugin::State& state, uint8_t* data,
+                          size_t dataSize, bool reliable)
+{
+  if (!state.cl)
+    return;
+
+  std::vector<uint8_t> buf(dataSize + 1);
+  buf[0] = Networking::MinPacketId; //Insert minimal pocket id as first byte (LEGACY)
+  memcpy(buf.data() + 1, data, dataSize);
+
+  state.cl->Send(buf.data(), buf.size(), reliable);
+}
+
