@@ -52,7 +52,7 @@ void MpClientPlugin::Send(State& state, const char* jsonContent, bool reliable)
 
   auto n = strlen(jsonContent);
   std::vector<uint8_t> buf(n + 1);
-  buf[0] = Networking::MinPacketId; //Insert minimal pocket id as first byte
+  buf[0] = Networking::MinPacketId; //Insert minimal pocket id as first byte (LEGACY)
   memcpy(buf.data() + 1, jsonContent, n);
 
   state.cl->Send(buf.data(), buf.size(), reliable);
