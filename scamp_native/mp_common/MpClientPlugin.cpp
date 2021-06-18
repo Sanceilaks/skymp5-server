@@ -57,7 +57,7 @@ void MpClientPlugin::Send(State& state, const char* jsonContent, bool reliable)
 
   state.cl->Send(buf.data(), buf.size(), reliable);
 }
-void MpClientPlugin::Send(MpClientPlugin::State& state, uint8_t* data,
+void MpClientPlugin::Send(State& state, uint8_t* data,
                           size_t dataSize, bool reliable)
 {
   if (!state.cl)

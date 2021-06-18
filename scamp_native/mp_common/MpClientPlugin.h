@@ -40,8 +40,6 @@ void Tick(State& st, OnPacket onPacket, void* state_);
 /// \param reliable Is lost packets will resend
 void Send(State& state, const char* jsonContent, bool reliable);
 
-//void Send(State& state, std::vector<uint8_t>& data, bool reliable);
-
 /// Sends data on server
 /// \param state Current client state
 /// \param data Content to send
