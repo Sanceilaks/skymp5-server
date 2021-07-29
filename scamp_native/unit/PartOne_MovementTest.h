@@ -33,16 +33,16 @@ TEST_CASE("Hypothesis: UpdateMovement may send nothing when actor without "
 //TODO: FIX TESTS лллл
 TEST_CASE("UpdateMovement when neighbour has been disconnected", "[PartOne]")
 {
-  
   PartOne partOne;
 
   for (int i = 0; i < 2; ++i) {
     DoConnect(partOne, i);
     partOne.CreateActor(i + 0xff000ABC, { 1.f, 2.f, 3.f }, 180.f, 0x3c);
     partOne.SetUserActor(i, i + 0xff000ABC);
-    auto m = jMovement;
-    m["idx"] = i;
-    DoMessage(partOne, i, m);
+    auto m = binaryMovement;
+    m.id = i;
+
+    DoMessage(partOne, i, 135, StructuresTools::ReadStructureToArray<Structures::MovementSize>(reinterpret_cast<uint8_t*>(&m)).data(), Structures::MovementSize);
   }
 
   partOne.Messages().clear();
@@ -50,13 +50,15 @@ TEST_CASE("UpdateMovement when neighbour has been disconnected", "[PartOne]")
   DoDisconnect(partOne, 1);
 
   partOne.Messages().clear();
-  DoMessage(partOne, 0, jMovement);
+  auto m = binaryMovement;
+
+  DoMessage(partOne, 0, 135, static_cast<uint8_t*>((void*)&m),
+            Structures::MovementSize);
   REQUIRE(partOne.Messages().size() == 1);
 }
 
 TEST_CASE("UpdateMovement", "[PartOne]")
 {
-  
   PartOne partOne;
 
   auto doMovement = [&] { DoMessage(partOne, 0, jMovement); };

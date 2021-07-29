@@ -1,4 +1,5 @@
 #pragma once
+#include "BinaryStructures.h"
 #include "FormCallbacks.h"
 #include "IPapyrusCompatibilityPolicy.h"
 #include "MpActor.h"
@@ -30,6 +31,17 @@ void DoMessage(PartOne& partOne, Networking::UserId id,
                         s.size());
 }
 
+void DoMessage(PartOne& partOne, Networking::UserId id, uint8_t messageType, uint8_t* data, size_t dataLength)
+{
+  auto newData = new uint8_t[dataLength + 1];
+  newData[0] = messageType;
+  memcpy(&newData[1], data, dataLength);
+
+  PartOne* ptr = &partOne;
+  PartOne::HandlePacket(ptr, id, Networking::PacketType::Message, newData,
+                        dataLength + sizeof(uint8_t));
+}
+
 void DoConnect(PartOne& partOne, Networking::UserId id)
 {
   PartOne* ptr = &partOne;
@@ -57,6 +69,11 @@ static const auto jMovement =
                       { "isSneaking", false },
                       { "isBlocking", false },
                       { "isWeapDrawn", false } } } };
+
+//uint16_t packedAngleZ = static_cast<uint16_t>((angleZ / 360.f)*65535.f)
+static const auto binaryMovement = Structures::Movement{
+  0, 1, -1, 1, (int)(179.f / 360.f * 65535.f), 0, 0, 0x3c
+};
 
 static const auto jLook = nlohmann::json{
   { "t", MsgType::UpdateLook },

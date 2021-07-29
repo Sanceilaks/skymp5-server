@@ -205,7 +205,7 @@ void PacketParser::TransformDataPacketInfoAction(
       auto movement = static_cast<Structures::Movement*>((void*)newData);
 
       actionListener.OnUpdateMovement(
-        rawMsgData, userId,
+        rawMsgData, movement->id,
         { (float)movement->x, (float)movement->y, (float)movement->z },
         { 0, 0, movement->angleZ / 65535.f * 360.f },
         movement->movementFlags &

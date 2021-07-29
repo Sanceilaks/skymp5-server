@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 namespace Structures {
   enum class RunMode
   {
@@ -22,13 +24,28 @@ namespace Structures {
   #pragma pack(push, 1)
   struct Movement
   {
-    int x, y, z;                 // 4 bytes at var
+    int id;                      // 4 bytes
+    float x, y, z;               // 4 bytes at var
     short int angleZ;            // 2 bytes
     int direction;               // 4 bytes
     int movementFlags;           // 4 bytes
     int worldOrCell;             // 4 bytes
-  };                             // total 26 bytes
+  };                             // total 30 bytes
   #pragma pack(pop)
-  constexpr auto MovementSize = 26;
+  constexpr auto MovementSize = 30;
+
+}
+
+namespace StructuresTools {
+  template<size_t size> std::array<uint8_t, size> ReadStructureToArray(uint8_t* struc)
+  {
+    auto data = std::array<uint8_t, size>();
+
+    for (auto i = 0; i < size; ++i) {
+      data[i] = struc[i];
+    }
+
+    return data;
+  }
 
 }
